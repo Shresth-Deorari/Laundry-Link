@@ -3,6 +3,28 @@
 ## Overview
 LaundryLink is a robust mobile application developed to digitalize the washing machine booking procedure at our college. It facilitates efficient management of bookings for students while providing the management with a secure way to monitor and log activities.
 
+## ScreenShots
+
+1) Login Screen  
+   <img src="ScreenShots/Login.jpg" alt="Login Screen" width="300"/>
+
+2) Sign Up Screen  
+   <img src="ScreenShots/SignUp.jpg" alt="Sign Up Screen" width="300"/>
+
+3) Home Screen  
+   <img src="ScreenShots/HomeScreen.jpg" alt="Home Screen" width="300"/>
+
+4) Sidebar  
+   <img src="ScreenShots/Sidebar.jpg" alt="Sidebar" width="300"/>
+
+5) Feedback  
+   <img src="ScreenShots/Feedback.jpg" alt="Feedback" width="300"/>
+
+6) About  
+   <img src="ScreenShots/About.jpg" alt="About" width="300"/>
+
+
+
 ## Features
 - **Real-time Booking Management**: Updates machine status on Firebase and reflects availability changes immediately across all clients.
 - **Data Integrity & Reset Functionality**: Allows for a "clear all bookings" function that resets machine statuses to free.
