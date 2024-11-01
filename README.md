@@ -5,23 +5,24 @@ LaundryLink is a robust mobile application developed to digitalize the washing m
 
 ## ScreenShots
 
-1) Login Screen  
-   <img src="ScreenShots/Login.jpg" alt="Login Screen" width="300"/>
+1) Login and Sign Up Screens  
+   <div style="display: flex; justify-content: space-between;">
+       <img src="ScreenShots/Login.jpg" alt="Login Screen" width="300" style="margin-right: 10px;"/>
+       <img src="ScreenShots/SignUp.jpg" alt="Sign Up Screen" width="300"/>
+   </div>
 
-2) Sign Up Screen  
-   <img src="ScreenShots/SignUp.jpg" alt="Sign Up Screen" width="300"/>
+2) Home Screen and Sidebar  
+   <div style="display: flex; justify-content: space-between;">
+       <img src="ScreenShots/HomeScreen.jpg" alt="Home Screen" width="300" style="margin-right: 10px;"/>
+       <img src="ScreenShots/Sidebar.jpg" alt="Sidebar" width="300"/>
+   </div>
 
-3) Home Screen  
-   <img src="ScreenShots/HomeScreen.jpg" alt="Home Screen" width="300"/>
+3) Feedback and About  
+   <div style="display: flex; justify-content: space-between;">
+       <img src="ScreenShots/Feedback.jpg" alt="Feedback" width="300" style="margin-right: 10px;"/>
+       <img src="ScreenShots/About.jpg" alt="About" width="300"/>
+   </div>
 
-4) Sidebar  
-   <img src="ScreenShots/Sidebar.jpg" alt="Sidebar" width="300"/>
-
-5) Feedback  
-   <img src="ScreenShots/Feedback.jpg" alt="Feedback" width="300"/>
-
-6) About  
-   <img src="ScreenShots/About.jpg" alt="About" width="300"/>
 
 
 
