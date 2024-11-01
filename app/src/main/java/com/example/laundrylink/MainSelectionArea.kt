@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,13 +31,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -116,43 +123,43 @@ fun MainSelectionArea(sharedPreferences: SharedPreferences, db: FirebaseFirestor
                 )
             }
         }
-        Button(onClick = {
-            machineCollection
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (!querySnapshot.isEmpty) {
-                        for (document in querySnapshot.documents) {
-                            val documentId = document.id
-                            val bookingUpdate = hashMapOf(
-                                "bookedBy" to "",
-                                "machineStatus" to true
-                            )
-                            machineCollection.document(documentId)
-                                .update(bookingUpdate as Map<String, Any>)
-                                .addOnSuccessListener {
-                                    Log.d("Firestore", "Cleared Machine data for document $documentId")
-                                }
-                                .addOnFailureListener { exception ->
-                                    Log.e("Firestore", "Error updating machine: ", exception)
-                                }
-                        }
-                        refreshMachineStatuses() // Refresh the UI after clearing
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("Firestore", "Error querying machines: ", exception)
-                }
-        })
-        {
-            Text(
-                text = "Clear all bookings",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 10.dp, top = 10.dp),
-            )
-
-        }
+//        Button(onClick = {
+//            machineCollection
+//                .get()
+//                .addOnSuccessListener { querySnapshot ->
+//                    if (!querySnapshot.isEmpty) {
+//                        for (document in querySnapshot.documents) {
+//                            val documentId = document.id
+//                            val bookingUpdate = hashMapOf(
+//                                "bookedBy" to "",
+//                                "machineStatus" to true
+//                            )
+//                            machineCollection.document(documentId)
+//                                .update(bookingUpdate as Map<String, Any>)
+//                                .addOnSuccessListener {
+//                                    Log.d("Firestore", "Cleared Machine data for document $documentId")
+//                                }
+//                                .addOnFailureListener { exception ->
+//                                    Log.e("Firestore", "Error updating machine: ", exception)
+//                                }
+//                        }
+//                        refreshMachineStatuses() // Refresh the UI after clearing
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    Log.e("Firestore", "Error querying machines: ", exception)
+//                }
+//        })
+//        {
+//            Text(
+//                text = "Clear all bookings",
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Light,
+//                color = Color.Black,
+//                modifier = Modifier.padding(start = 10.dp, top = 10.dp),
+//            )
+//
+//        }
     }
 }
 
@@ -165,8 +172,9 @@ fun MachineGrid(
     machineCollection: CollectionReference,
     listOfMachines: List<MachineInfo>
 ) {
+    var iconResource by remember { mutableStateOf(R.drawable.notification) }
     val showQRDialog = remember { mutableStateOf(false) }
-
+    var isBell : Boolean = false;
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -199,42 +207,78 @@ fun MachineGrid(
             Row(
                 Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = 10.dp, bottom = 10.dp)
+                    .padding(start = 10.dp, bottom = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically // Align items vertically centered
             ) {
+                // Status Text
                 if (machineStatus) {
                     Text(
-                        "This machine is free", color = Color.Green,
-                        fontSize = 16.sp
+                        text = "Machine Free",
+                        color = Color.Green,
+                        fontSize = 16.sp,
+                        style = androidx.compose.ui.text.TextStyle(
+                            shadow = Shadow(
+                                color = Color(0xFF636363),
+                                offset = Offset(1f, 1f),
+                                blurRadius = 5f
+                            )
+                        ),
+                        modifier = Modifier.padding(bottom = 10.dp)
                     )
                 } else if (bookedState.value == machineNumber) {
                     Text(
-                        "XX:XX Time remaining", color = Color.Blue,
-                        fontSize = 16.sp
+                        text = "XX:XX Time remaining",
+                        color = Color.Green,
+                        fontSize = 16.sp,
+                        style = androidx.compose.ui.text.TextStyle(
+                            shadow = Shadow(
+                                color = Color(0xFF636363),
+                                offset = Offset(1f, 1f),
+                                blurRadius = 5f
+                            )
+                        )
                     )
                 } else {
-                    Row {
+                    // Notify me Text and Icon Button
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "Notify me", color = Color.Gray,
-                            fontSize = 16.sp
+                            "Notify me",
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            style = androidx.compose.ui.text.TextStyle(
+                                shadow = Shadow(
+                                    color = Color(0xFF636363),
+                                    offset = Offset(1f, 1f),
+                                    blurRadius = 2f
+                                )
+                            )
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         IconButton(onClick = {
-                            // Notification logic
+                            if (iconResource == R.drawable.notification) {
+                                iconResource = R.drawable.bell
+                                isBell = true
+                            } else {
+                                iconResource = R.drawable.notification
+                                isBell = false;
+                            }
                         }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.notification),
+                                painter = painterResource(id = iconResource), // Use the state variable for the icon
                                 contentDescription = "Notify",
-                                Modifier.size(30.dp)
+                                modifier = Modifier.size(if(isBell)24.dp else 30.dp)
                             )
                         }
                     }
                 }
+
             }
             Box(
                 modifier = Modifier
                     .size(18.dp)
-                    .align(Alignment.BottomEnd)
                     .padding(end = 10.dp, bottom = 10.dp)
+                    .align(Alignment.BottomEnd)
                     .background(
                         color = if (machineStatus) {
                             Color.Green
@@ -243,9 +287,11 @@ fun MachineGrid(
                         },
                         shape = CircleShape
                     )
+                    .shadow(5.dp, shape = CircleShape)
             )
         }
     }
+
 
     if (showQRDialog.value) {
         QRCodeDialog(onDismiss = { showQRDialog.value = false })
